@@ -1,9 +1,13 @@
 class Person:
+    people = {}  # Class attribute to store people by their name
+
     def __init__(self, name, age):
         self.name = name
         self.age = age
         self.wife = None
         self.husband = None
+        # Add each instance to the Person.people dictionary by name
+        Person.people[self.name] = self
 
     def set_spouse(self, spouse):
         # This method sets the spouse reference for wife or husband
@@ -15,16 +19,16 @@ class Person:
             spouse.wife = self
 
 
-def create_person_list(people):
-    person_instances = []
+def create_person_list(people_info):
+    person_instances = []  # List to hold created Person instances
 
     # First, create all Person instances and add them to the person_instances list
-    for person in people:
+    for person in people_info:
         new_person = Person(person["name"], person["age"])
-        person_instances.append(new_person)  # Append the created instance to the list
+        person_instances.append(new_person)  # Add the created instance to the list
 
     # Next, set the spouses (wife or husband)
-    for person in people:
+    for person in people_info:
         new_person = next(p for p in person_instances if p.name == person["name"])
 
         if "wife" in person and person["wife"]:
@@ -34,18 +38,18 @@ def create_person_list(people):
             spouse = next(p for p in person_instances if p.name == person["husband"])
             new_person.set_spouse(spouse)
 
-    # Return the list of created Person instances
+    # Return the list of created Person instances, not using Person.people anymore
     return person_instances
 
 
 # Example usage
-people = [
+people_info = [
     {"name": "Ross", "age": 30, "wife": "Rachel"},
     {"name": "Joey", "age": 29, "wife": None},
     {"name": "Rachel", "age": 28, "husband": "Ross"}
 ]
 
-person_list = create_person_list(people)
+person_list = create_person_list(people_info)
 
 # Test the functionality
 print(isinstance(person_list[0], Person))  # True
