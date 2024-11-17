@@ -1,16 +1,13 @@
 class Person:
-    people = {}
     def __init__(self, name, age):
         self.name = name
         self.age = age
         self.wife = None
         self.husband = None
 
-        Person.people[name] = self
-
-
     def set_spouse(self, spouse):
-        if self.age < spouse.age:
+        # This method sets the spouse reference for wife or husband
+        if self.age < spouse.age:  # Assuming the female is younger
             self.wife = spouse
             spouse.husband = self
         else:
@@ -18,21 +15,27 @@ class Person:
             spouse.wife = self
 
 
-def create_person_list(people: list) -> list:
+def create_person_list(people):
     person_instances = []
+
+    # First, create all Person instances and add them to the person_instances list
     for person in people:
         new_person = Person(person["name"], person["age"])
+        person_instances.append(new_person)
 
+    # Next, set the spouses (wife or husband)
     for person in people:
-        new_person = Person.people[person["name"]]
+        new_person = next(p for p in person_instances if p.name == person["name"])
 
         if "wife" in person and person["wife"]:
-            spouse = Person.people[person["wife"]]
+            spouse = next(p for p in person_instances if p.name == person["wife"])
             new_person.set_spouse(spouse)
         elif "husband" in person and person["husband"]:
-            spouse = Person.people[person["husband"]]
+            spouse = next(p for p in person_instances if p.name == person["husband"])
             new_person.set_spouse(spouse)
-    return list(Person.people.values())
+
+    # Return the list of created Person instances
+    return person_instances
 
 
 # Example usage
@@ -55,5 +58,3 @@ print(person_list[2].name)  # "Rachel"
 print(person_list[2].husband is person_list[0])  # True
 print(person_list[2].husband.name)  # "Ross"
 print(person_list[2].husband.wife is person_list[2])  # True
-
-print(Person.people)  # Should contain Ross, Joey, and Rachel in the dictionary
