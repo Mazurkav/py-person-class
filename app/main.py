@@ -21,7 +21,7 @@ def create_person_list(people):
     # First, create all Person instances and add them to the person_instances list
     for person in people:
         new_person = Person(person["name"], person["age"])
-        person_instances.append(new_person)
+        person_instances.append(new_person)  # Append the created instance to the list
 
     # Next, set the spouses (wife or husband)
     for person in people:
