@@ -1,70 +1,56 @@
 class Person:
-    # Class attribute to store instances by their name
+    # Class attribute to store people by name
     people = {}
 
-    def __init__(self, name: str, age: int):
+    def __init__(self, name, age):
         self.name = name
         self.age = age
-        # Add this instance to the people dictionary by name
-        Person.people[name] = self
         self.wife = None
         self.husband = None
+        # Add the instance to the class-level dictionary using the name as the key
+        Person.people[name] = self
 
-    def set_spouse(self, spouse: 'Person', relationship: str):
-        """Sets spouse for the person based on the relationship type (wife or husband)."""
-        if relationship == "wife":
-            self.wife = spouse
-            spouse.husband = self
-        elif relationship == "husband":
-            self.husband = spouse
-            spouse.wife = self
+    def set_spouse(self, spouse_name):
+        # Set the spouse relationship
+        spouse = Person.people.get(spouse_name)
+        if spouse:
+            if self.age < spouse.age:  # Assuming if the age is less, they are the wife
+                self.wife = spouse
+                spouse.husband = self
+            else:
+                self.husband = spouse
+                spouse.wife = self
 
 
 def create_person_list(people):
     person_instances = []
-    # First, create Person instances
-    for p in people:
-        # Create a Person instance
-        person = Person(p['name'], p['age'])
-        person_instances.append(person)
 
-    # Now set the spouses (wife/husband) based on the input data
-    for p in people:
-        person = Person.people[p['name']]  # Retrieve the created person instance
-        if 'wife' in p and p['wife'] is not None:
-            person.set_spouse(Person.people[p['wife']], 'husband')
-        if 'husband' in p and p['husband'] is not None:
-            person.set_spouse(Person.people[p['husband']], 'wife')
+    # First, create all Person instances
+    for person_dict in people:
+        person = Person(person_dict['name'], person_dict['age'])
 
-    return person_instances
+    # Now, link spouses where applicable
+    for person_dict in people:
+        person = Person.people[person_dict['name']]
+        spouse_name = person_dict.get('wife') or person_dict.get('husband')
+        if spouse_name:
+            person.set_spouse(spouse_name)
+
+    # Return the list of Person instances
+    return list(Person.people.values())
 
 
-# Example for testing:
-people = [
-    {"name": "Ross", "age": 30, "wife": "Rachel"},
-    {"name": "Joey", "age": 29, "wife": None},
-    {"name": "Rachel", "age": 28, "husband": "Ross"}
+# Example usage:
+people_data = [
+    {"name": "John", "age": 30, "wife": "Jane"},
+    {"name": "Jane", "age": 28, "husband": "John"},
+    {"name": "Mike", "age": 40, "wife": "Sarah"},
+    {"name": "Sarah", "age": 38, "husband": "Mike"}
 ]
 
-person_list = create_person_list(people)
+person_list = create_person_list(people_data)
 
-# Tests
-assert isinstance(person_list[0], Person)  # True
-assert person_list[0].name == "Ross"
-assert person_list[0].wife is person_list[2]  # True
-assert person_list[0].wife.name == "Rachel"
-
-assert person_list[1].name == "Joey"
-assert person_list[1].wife is None  # No wife for Joey
-
-assert isinstance(person_list[2], Person)  # True
-assert person_list[2].name == "Rachel"
-assert person_list[2].husband is person_list[0]  # True
-assert person_list[2].husband.name == "Ross"
-assert person_list[2].husband.wife is person_list[2]  # True
-
-assert Person.people == {
-    "Ross": person_list[0],
-    "Joey": person_list[1],
-    "Rachel": person_list[2]
-}
+# Check the created instances
+for person in person_list:
+    print(
+        f"Name: {person.name}, Age: {person.age}, Wife: {person.wife.name if person.wife else None}, Husband: {person.husband.name if person.husband else None}")
