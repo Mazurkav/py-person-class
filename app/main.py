@@ -1,64 +1,35 @@
 class Person:
-    people = {}  # Class attribute to store people by their name
+    # Class attribute to store all Person instances by name
+    people = {}
 
-    def __init__(self, name, age):
+    def __init__(self, name: str, age: int):
+        """
+        Initialize a new Person instance.
+
+        :param name: The name of the person.
+        :param age: The age of the person.
+        """
         self.name = name
         self.age = age
-        self.wife = None
-        self.husband = None
-        # Add each instance to the Person.people dictionary by name
-        Person.people[self.name] = self
+        # Add this instance to the class-level people dictionary
+        Person.people[name] = self
 
-    def set_spouse(self, spouse):
-        # This method sets the spouse reference for wife or husband
-        if self.age < spouse.age:  # Assuming the female is younger
-            self.wife = spouse
-            spouse.husband = self
-        else:
-            self.husband = spouse
-            spouse.wife = self
+def create_person_list(people):
+    """
+    Create a list of Person instances from a list of dictionaries.
 
+    :param people: A list of dictionaries containing person data.
+    :return: A list of Person instances.
+    """
+    # Create instances without setting wife/husband links yet
+    person_list = [Person(person["name"], person["age"]) for person in people]
 
-def create_person_list(people_info):
-    person_instances = []  # List to hold created Person instances
+    # Set wife/husband attributes after all instances are created
+    for person in people:
+        instance = Person.people[person["name"]]
+        if "wife" in person and person["wife"] is not None:
+            instance.wife = Person.people[person["wife"]]
+        elif "husband" in person and person["husband"] is not None:
+            instance.husband = Person.people[person["husband"]]
 
-    # First, create all Person instances and add them to the person_instances list
-    for person in people_info:
-        new_person = Person(person["name"], person["age"])
-        person_instances.append(new_person)  # Add the created instance to the list
-
-    # Next, set the spouses (wife or husband)
-    for person in people_info:
-        new_person = next(p for p in person_instances if p.name == person["name"])
-
-        if "wife" in person and person["wife"]:
-            spouse = next(p for p in person_instances if p.name == person["wife"])
-            new_person.set_spouse(spouse)
-        elif "husband" in person and person["husband"]:
-            spouse = next(p for p in person_instances if p.name == person["husband"])
-            new_person.set_spouse(spouse)
-
-    # Return the list of created Person instances, not using Person.people anymore
-    return person_instances
-
-
-# Example usage
-people_info = [
-    {"name": "Ross", "age": 30, "wife": "Rachel"},
-    {"name": "Joey", "age": 29, "wife": None},
-    {"name": "Rachel", "age": 28, "husband": "Ross"}
-]
-
-person_list = create_person_list(people_info)
-
-# Test the functionality
-print(isinstance(person_list[0], Person))  # True
-print(person_list[0].name)  # "Ross"
-print(person_list[0].wife is person_list[2])  # True
-print(person_list[0].wife.name)  # "Rachel"
-
-print(isinstance(person_list[2], Person))  # True
-print(person_list[2].name)  # "Rachel"
-print(person_list[2].husband is person_list[0])  # True
-print(person_list[2].husband.name)  # "Ross"
-print(person_list[2].husband.wife is person_list[2])  # True
+    return person_list
