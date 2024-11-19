@@ -1,5 +1,6 @@
 from typing import List, Dict, Union
 
+
 class Person:
     # Class attribute to store all Person instances by name
     people: Dict[str, "Person"] = {}
