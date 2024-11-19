@@ -1,6 +1,8 @@
+from typing import List, Dict, Union
+
 class Person:
     # Class attribute to store all Person instances by name
-    people = {}
+    people: Dict[str, "Person"] = {}
 
     def __init__(self, name: str, age: int) -> None:
         """
@@ -15,7 +17,9 @@ class Person:
         Person.people[name] = self
 
 
-def create_person_list(people: list[dict[str, str | int | None]]) -> list[Person]:
+def create_person_list(
+    people: List[Dict[str, Union[str, int, None]]]
+) -> List[Person]:
     """
     Create a list of Person instances from a list of dictionaries.
 
