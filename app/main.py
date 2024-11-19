@@ -2,7 +2,7 @@ class Person:
     # Class attribute to store all Person instances by name
     people = {}
 
-    def __init__(self, name: str, age: int):
+    def __init__(self, name: str, age: int) -> None:
         """
         Initialize a new Person instance.
 
@@ -14,7 +14,8 @@ class Person:
         # Add this instance to the class-level people dictionary
         Person.people[name] = self
 
-def create_person_list(people):
+
+def create_person_list(people: list[dict[str, str | int | None]]) -> list[Person]:
     """
     Create a list of Person instances from a list of dictionaries.
 
