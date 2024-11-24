@@ -1,18 +1,12 @@
 class Person:
-    # Class attribute to store people by their names
     people = {}
 
-    def __init__(self, name: str, age: int):
+    def __init__(self, name, age):
         self.name = name
         self.age = age
-        # Add this instance to the people dictionary
-        Person.people[name] = self
         self.wife = None
         self.husband = None
+        Person.people[name] = self
 
-    def set_spouse(self, spouse: "Person", is_wife: bool):
-        """Sets the spouse for the person instance."""
-        if is_wife:
-            self.wife = spouse
-        else:
-            self.husband = spouse
+    def __repr__(self):
+        return f"Person(name={self.name}, age={self.age})"
