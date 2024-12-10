@@ -23,7 +23,10 @@ def create_person_list(people: list) -> list:
     :return: List of Person instances.
     """
     # First, create Person instances without relationships
-    person_instances = [Person(person["name"], person["age"]) for person in people]
+    person_instances = [
+        Person(person["name"],
+        person["age"]) for person in people
+    ]
 
     # Then, set relationships (wife/husband)
     for person in people:
