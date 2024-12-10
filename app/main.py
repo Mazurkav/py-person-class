@@ -1,8 +1,8 @@
 class Person:
     # Class attribute to store Person instances by name
-    people = {}
+    people: dict[str, "Person"] = {}
 
-    def __init__(self, name: str, age: int):
+    def __init__(self, name: str, age: int) -> None:
         """
         Initialize a Person instance.
 
@@ -15,7 +15,7 @@ class Person:
         Person.people[name] = self
 
 
-def create_person_list(people: list) -> list:
+def create_person_list(people: list[dict]) -> list[Person]:
     """
     Create a list of Person instances from a list of dictionaries.
 
@@ -24,8 +24,8 @@ def create_person_list(people: list) -> list:
     """
     # First, create Person instances without relationships
     person_instances = [
-        Person(person["name"],
-        person["age"]) for person in people
+        Person(person["name"], person["age"])
+        for person in people
     ]
 
     # Then, set relationships (wife/husband)
